@@ -29,7 +29,15 @@ public class DTMF
 
 
 
-    public static func generateDTMF(frequency1 frequency1: Float, frequency2: Float, markSpace: MarkSpaceType, sampleRate: Float) -> [Float]
+    /**
+     Generates a series of Float samples representing a DTMF tone with a given mark and space.
+     
+        - parameter DTMF: takes a DTMFType comprised of two floats that represent the desired tone frequencies in Hz.
+        - parameter markSpace: takes a MarkSpaceType comprised of two floats representing the duration of each in milliseconds. The mark represents the length of the tone and space the silence.
+        - parameter sampleRate: the number of samples per second (Hz) desired.
+        - returns: An array of Float that contains the Linear PCM samples that can be fed to AVAudio.
+     */
+    public static func generateDTMF(DTMF: DTMFType, markSpace: MarkSpaceType = motorola, sampleRate: Float = 44100.0) -> [Float]
     {
         let toneLengthInSamples = 10e-4 * markSpace.0 * sampleRate
         let silenceLengthInSamples = 10e-4 * markSpace.1 * sampleRate
@@ -39,10 +47,10 @@ public class DTMF
 
         for i in 0 ..< Int(toneLengthInSamples) {
             // Add first tone at half volume
-            let sample1 = 0.5 * sin(Float(i) * twoPI / (sampleRate / frequency1));
+            let sample1 = 0.5 * sin(Float(i) * twoPI / (sampleRate / DTMF.0));
 
             // Add second tone at half volume
-            let sample2 = 0.5 * sin(Float(i) * twoPI / (sampleRate / frequency2));
+            let sample2 = 0.5 * sin(Float(i) * twoPI / (sampleRate / DTMF.1));
 
             sound[i] = sample1 + sample2
         }

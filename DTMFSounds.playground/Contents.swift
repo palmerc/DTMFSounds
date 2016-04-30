@@ -19,7 +19,7 @@ if let tones = DTMF.tonesForString(phoneNumber) {
     // fill up the buffer with some samples
     var allSamples = [Float]()
     for tone in tones {
-        let samples = DTMF.generateDTMF(frequency1: tone.0, frequency2: tone.1, markSpace: DTMF.motorola, sampleRate: _sampleRate)
+        let samples = DTMF.generateDTMF(tone, markSpace: DTMF.motorola, sampleRate: _sampleRate)
         allSamples.appendContentsOf(samples)
     }
 
