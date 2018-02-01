@@ -14,26 +14,26 @@ var _mixer = _engine.mainMixerNode
 
 let phoneNumber = "1234567890*#ABCD"
 if let tones = DTMF.tonesForString(phoneNumber) {
-    let audioFormat = AVAudioFormat(commonFormat: .PCMFormatFloat32, sampleRate: Double(_sampleRate), channels: 2, interleaved: false)
+    let audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(_sampleRate), channels: 2, interleaved: false)!
 
     // fill up the buffer with some samples
     var allSamples = [Float]()
     for tone in tones {
         let samples = DTMF.generateDTMF(tone, markSpace: DTMF.motorola, sampleRate: _sampleRate)
-        allSamples.appendContentsOf(samples)
+        allSamples.append(contentsOf: samples)
     }
 
     let frameCount = AVAudioFrameCount(allSamples.count)
-    var buffer = AVAudioPCMBuffer(PCMFormat: audioFormat, frameCapacity: frameCount)
+    var buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: frameCount)!
 
     buffer.frameLength = frameCount
-    var channelMemory = buffer.floatChannelData
+    var channelMemory = buffer.floatChannelData!
     for channelIndex in 0 ..< Int(audioFormat.channelCount) {
         var frameMemory = channelMemory[channelIndex]
-        memcpy(frameMemory, allSamples, Int(frameCount) * sizeof(Float))
+        memcpy(frameMemory, allSamples, Int(frameCount) * MemoryLayout<Float>.size)
     }
 
-    _engine.attachNode(_player)
+    _engine.attach(_player)
     _engine.connect(_player, to:_mixer, format:audioFormat)
 
     do {
@@ -42,7 +42,7 @@ if let tones = DTMF.tonesForString(phoneNumber) {
         print("Engine start failed - \(error)")
     }
 
-    _player.scheduleBuffer(buffer, atTime:nil, options:.Loops,completionHandler:nil)
+    _player.scheduleBuffer(buffer, at:nil, options:.loops,completionHandler:nil)
     _player.play()
 }
 
