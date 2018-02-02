@@ -37,13 +37,13 @@ public class DTMF
         - parameter sampleRate: the number of samples per second (Hz) desired.
         - returns: An array of Float that contains the Linear PCM samples that can be fed to AVAudio.
      */
-    public static func generateDTMF(DTMF: DTMFType, markSpace: MarkSpaceType = motorola, sampleRate: Float = 44100.0) -> [Float]
+    public static func generateDTMF(_ DTMF: DTMFType, markSpace: MarkSpaceType = motorola, sampleRate: Float = 44100.0) -> [Float]
     {
         let toneLengthInSamples = 10e-4 * markSpace.0 * sampleRate
         let silenceLengthInSamples = 10e-4 * markSpace.1 * sampleRate
 
-        var sound = [Float](count: Int(toneLengthInSamples + silenceLengthInSamples), repeatedValue: 0)
-        let twoPI = 2.0 * Float(M_PI)
+        var sound = [Float](repeating: 0, count: Int(toneLengthInSamples + silenceLengthInSamples))
+        let twoPI:Float = 2.0 * .pi
 
         for i in 0 ..< Int(toneLengthInSamples) {
             // Add first tone at half volume
@@ -139,11 +139,11 @@ extension DTMF
         return tone
     }
 
-    public static func tonesForString(string: String) -> [DTMFType]?
+    public static func tonesForString(_ string: String) -> [DTMFType]?
     {
         var tones = [DTMFType]()
-        for character in string.characters {
-            if let tone = DTMF.toneForCharacter(character) {
+        for character in string {
+            if let tone = DTMF.toneForCharacter(character: character) {
                 tones.append(tone)
             }
         }
